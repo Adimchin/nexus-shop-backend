@@ -1,6 +1,5 @@
-import { db } from "../db/db.js";
+import { checkUserExists } from "../db/queries/usersQueries.js";
 import jwt from "jsonwebtoken";
-import { users } from "../db/schema.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const authMiddleware = async (
@@ -19,16 +18,22 @@ export const authMiddleware = async (
   }
 
   // verify jwt token
+  
   const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET!);
 
+  if (typeof decoded === "string" || !decoded.userId) {
+  throw new Error("Invalid token payload");
+}
+
+
   //verify user still exists
-  /*const usersList = 
+  const usersList = await checkUserExists(decoded.userId); 
 
 if(usersList.length <= 0){
   return res.json({error: {
     message: 'user does not exist'
   }})
 };
-*/
+
   next();
 };
