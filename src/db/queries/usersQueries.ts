@@ -17,7 +17,7 @@ export const checkUserExists = async (userId: string) => {
     process.exit(1)
     }
     console.log('An error occured'); 
-    db.end();
+    await db.end();
     process.exit(1)
   }
 };
